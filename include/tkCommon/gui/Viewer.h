@@ -133,6 +133,7 @@ namespace tk { namespace gui {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         static void tkViewport2D(int width, int height, int x=0, int y=0);
+        static void tkViewport3D(int width, int height, int x=0, int y=0);
 
         static void errorCallback(int error, const char* description);
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

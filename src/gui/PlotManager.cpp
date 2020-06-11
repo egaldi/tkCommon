@@ -111,6 +111,8 @@ void PlotManager::drawLegend() {
                 type_str = "-";
             else if(p->conf.type == plot_t::plottype_t::CIRCLES)
                 type_str = "o";
+            else if(p->conf.type == plot_t::plottype_t::POSES)
+                type_str = ">";
 
             if(p->conf.is2d)
                 type_str += " 2d";

@@ -779,10 +779,10 @@ void Viewer::tkDrawTexture(GLuint tex, float sx, float sy) {
     glBegin(GL_QUADS);
 
     // 2d draw
-    glTexCoord2f(0, 1); glVertex3f(i*(sy/2), i*(sx/2), 0);
-    glTexCoord2f(0, 0); glVertex3f(i*(sy/2), j*(sx/2), 0);
-    glTexCoord2f(1, 0); glVertex3f(j*(sy/2), j*(sx/2), 0);
-    glTexCoord2f(1, 1); glVertex3f(j*(sy/2), i*(sx/2), 0);
+    glTexCoord2f(0, 1); glVertex3f(i*(sx/2), i*(sy/2), 0);
+    glTexCoord2f(0, 0); glVertex3f(i*(sx/2), j*(sy/2), 0);
+    glTexCoord2f(1, 0); glVertex3f(j*(sx/2), j*(sy/2), 0);
+    glTexCoord2f(1, 1); glVertex3f(j*(sx/2), i*(sy/2), 0);
 
 
     glEnd();
@@ -872,37 +872,53 @@ Viewer::tkDrawImage(tk::data::ImageData<uint8_t>& image, GLuint texture)
         tk::tformat::printMsg("Viewer","Image empty\n");
     }else{
 
-        //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        //use fast 4-byte alignment (default anyway) if possible
+        glPixelStorei(GL_UNPACK_ALIGNMENT, ( (image.width*sizeof(uint8_t)) & 3) ? 1 : 4);
+
+        //set length of one complete row in data (doesn't need to equal image.cols)
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, image.width);
         glBindTexture(GL_TEXTURE_2D, texture);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        // Set texture clamping method
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
+            
         if(image.channels == 4) {
-            glTexImage2D(GL_TEXTURE_2D,         // Type of texture
-                         0,                   // Pyramid level (for mip-mapping) - 0 is the top level
-                         GL_RGB,              // Internal colour format to convert to
-                         image.width,          // Image width  i.e. 640 for Kinect in standard mode
-                         image.height,          // Image height i.e. 480 for Kinect in standard mode
-                         0,                   // Border width in pixels (can either be 1 or 0)
-                         GL_RGBA,              // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
-                         GL_UNSIGNED_BYTE,    // Image data type
-                         image.data);        // The actual image data itself
+            glTexImage2D(GL_TEXTURE_2D,      
+                         0,                  
+                         GL_RGB,             
+                         image.width,          
+                         image.height,         
+                         0,                 
+                         GL_RGBA,             
+                         GL_UNSIGNED_BYTE,   
+                         image.data);      
         }else if(image.channels == 3){
-            glTexImage2D(GL_TEXTURE_2D,         // Type of texture
-                         0,                   // Pyramid level (for mip-mapping) - 0 is the top level
-                         GL_RGB,              // Internal colour format to convert to
-                         image.width,          // Image width  i.e. 640 for Kinect in standard mode
-                         image.height,          // Image height i.e. 480 for Kinect in standard mode
-                         0,                   // Border width in pixels (can either be 1 or 0)
-                         GL_RGB,              // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
-                         GL_UNSIGNED_BYTE,    // Image data type
-                         image.data);        // The actual image data itself
+            glTexImage2D(GL_TEXTURE_2D,   
+                         0,               
+                         GL_RGB,          
+                         image.width,     
+                         image.height,    
+                         0,               
+                         GL_RGB,          
+                         GL_UNSIGNED_BYTE,
+                         image.data);     
+        } else if(image.channels == 1){
+            GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_RED};
+            glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+            glTexImage2D(GL_TEXTURE_2D,       
+                         0,                   
+                         GL_RED,              
+                         image.width,         
+                         image.height,        
+                         0,                 
+                         GL_RED,             
+                         GL_UNSIGNED_BYTE,   
+                         image.data);     
+        } else {
+            tkFATAL("channels num not supported: " + std::to_string(image.channels) );
         }
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
