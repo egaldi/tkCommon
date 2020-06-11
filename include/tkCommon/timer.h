@@ -24,6 +24,11 @@
 #define COL_PURPLEB "\033[1;35m"
 #define COL_CYANB "\033[1;36m"
 
+#ifdef TIMER_START
+    #undef TIMER_START
+    #undef TIMER_STOP
+#endif
+
 // Simple Timer 
 //#define TIMER_ENABLE
 #ifdef TIMER_ENABLE 
@@ -37,7 +42,7 @@
                     (double)(end##name.tv_nsec - start##name.tv_nsec))/1.0e6;          \
         std::cout<<col<<#name<<" Time:"<<std::setw(16)<<t_ns<<" ms\n"<<COL_END; }
 
-    #define TIMER_STOP(name) TIMER_STOP_COL(name, COL_CYANB)
+    #define TIMER_STOP(name) TIMER_STOP_COL(name, COL_CYANB);
 
 #else
 

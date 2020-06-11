@@ -1,6 +1,9 @@
 #pragma once
+#include "tkCommon/gui/Drawable.h"
 #include "tkCommon/math/MatIO.h"
 #include "tkCommon/data/HeaderData.h"
+
+#include "tkCommon/gui/Viewer.h"
 
 namespace tk { namespace data {
 
@@ -9,8 +12,13 @@ namespace tk { namespace data {
      * This class is a basic data class that just contains basic information that all sensor data class must contain.
      * @see HeaderData
      */
-    class SensorData : tk::math::MatDump {
+	class SensorData : public tk::gui::Drawable, public tk::math::MatDump {
     public:
+
+                 SensorData() {};
+        virtual ~SensorData() {};
+
+
         HeaderData  header;                 /**< Header, @see HeaderData */
 
         /**
@@ -27,7 +35,11 @@ namespace tk { namespace data {
          */
         virtual void release() { clsErr("release method not implemented"); tkFATAL("abort"); };
 
-        virtual bool checkDimension(SensorData *s) { clsErr("check dimension method not implemented"); tkFATAL("abort"); };
+        virtual bool checkDimension(SensorData *s) { 
+            clsErr("check dimension method not implemented"); 
+            tkFATAL("abort"); 
+            return false;
+        };
 
         /**
          * @brief Overloading of operator =
