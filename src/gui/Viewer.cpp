@@ -239,7 +239,8 @@ Viewer::run() {
         xLim = aspectRatio;
         yLim = 1.0;
 
-        glViewport(0, 0, width, height);
+        glViewport(viewport3dOffset.x, viewport3dOffset.y, 
+            float(width)*viewport3dMultiplier.x, float(height)*viewport3dMultiplier.y);
 
         glMatrixMode( GL_PROJECTION );
         glLoadIdentity();

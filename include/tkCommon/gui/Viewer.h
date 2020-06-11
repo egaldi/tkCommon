@@ -183,6 +183,9 @@ namespace tk { namespace gui {
         float                   xLim = 1.0; /**< 2d x coord screen limit (1.0 if quad) */  
         float                   yLim = 1.0; /**< 2d y coord screen limit (fixed to 1.0) */
 
+        tk::common::Vector2<float> viewport3dOffset     = {0,0}; /**< viewport offset */
+        tk::common::Vector2<float> viewport3dMultiplier = {1,1}; /**< viewport width heith multiplier */
+
         static Camera3D         mouseView;
         static const int        MAX_KEYS = 1024;
         static bool             keys[MAX_KEYS];

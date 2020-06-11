@@ -55,6 +55,14 @@ class Camera3D
     void setAngle(tk::common::Vector3<float> a) {
         m_angles[0] = a.z;
         m_angles[1] = a.y;
+        // Limit the vertical angle 
+        if (m_angles[1] > vangleMax)
+            m_angles[1] = vangleMax;
+
+        if (m_angles[1] < vangleMin)
+            m_angles[1] = vangleMin;
+        updateEye();
+        updateMatrices();
     }
     tk::common::Vector3<float> getAngle() {
         tk::common::Vector3<float> a;
@@ -63,6 +71,16 @@ class Camera3D
         a.x = 0;
         return a;
     }
+    void setZoom(float zoom) {
+        m_radius = zoom;
+        updateEye();
+        updateMatrices();
+    }
+    float getZoom() {
+        return m_radius;
+    }
+
+
     tk::common::Vector3<float> unproject(float zplane);
     tk::common::Vector3<float> project(tk::common::Vector3<float> point);
 
