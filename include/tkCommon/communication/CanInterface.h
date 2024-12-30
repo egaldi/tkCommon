@@ -3,6 +3,7 @@
 #include <tkCommon/communication/ethernet/PCAPHandler.h>
 #include "tkCommon/common.h"
 #include "tkCommon/data/CanData.h"
+#include <linux/sockios.h>
 
 namespace tk { namespace communication {
     class CanInterface {

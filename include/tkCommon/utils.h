@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "yaml-cpp/yaml.h" 
-
+#include <cmath>
 /**
  * Timestamp value
  * espessed in microseconds from epoch
